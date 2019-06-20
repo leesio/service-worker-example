@@ -1,0 +1,38 @@
+<html>
+  <body>
+    <h1>Service Worker Example</h1>
+    <h2>Connection result</h2>
+    <div id="results">
+    </div>
+  </body>
+  <script>
+    function updateResult(result) {
+      let parent = document.querySelector("#results");
+      let el = document.createElement("PRE")
+      el.innerText = JSON.stringify(result) ;
+      parent.appendChild(el)
+    }
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(
+        registration => {
+          console.log(
+            'ServiceWorker registration successful with scope: ',
+            registration.scope,
+          );
+          navigator.serviceWorker.addEventListener('install', event => {
+            console.log('serviceWorker installed', event);
+          });
+          navigator.serviceWorker.addEventListener('message', m => {
+            console.log('got message from serviceWorker')
+            if (m.data) {
+              updateResult(m.data)
+            }
+          });
+        },
+        err => {
+          console.log('ServiceWorker registration failed: ', err);
+        },
+      );
+    });
+  </script>
+</html>
